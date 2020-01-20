@@ -10,6 +10,8 @@ def parse_argument():
     parser = argparse.ArgumentParser()
     parser.add_argument("username", help="username for authentication")
     parser.add_argument("--repo", "-r", default='devops_lab', help="repo for statistic")
+    parser.add_argument("--poolrequestperday", action="store_true", help="show pool request per day")
+    parser.add_argument("--userwhoopen", action="store_true", help="show users who opened pool requests")
     parser.add_argument('--version', '-v', action='version', version='My test util v.0.0.1')
     global args
     args = parser.parse_args()
@@ -53,15 +55,21 @@ class PoolRequestStat:
         for k, v in count_dict.items():
             print(k,v)
 
+    def usr_opened(self):
+        for i in range(len(self.poolrequestresult)):
+            key = self.poolrequestresult[i]['user']['login']
+            val = self.poolrequestresult[i]['number']
+            print("{} opened pool request number {}".format(key, val))
+
+
+
 parse_argument()
 prs = PoolRequestStat(make_request(args.username, args.repo))
-prs.pr_in_day()
 
-# parse_argument()
-# mr = make_request(args.username, args.repo)
-# print(mr)
+if args.poolrequestperday:
+    prs.pr_in_day()
+if args.userwhoopen:
+    prs.usr_opened()
 
-# pp = pprint.PrettyPrinter()
-# pp.pprint(make_request(args.username, args.repo)[1])
 
 print(1)
