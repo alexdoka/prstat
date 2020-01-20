@@ -3,6 +3,7 @@ import pprint
 import json
 import argparse
 import getpass
+from collections import defaultdict
 
 
 def parse_argument():
@@ -35,12 +36,26 @@ def make_request(username, repo):
     return res
 
 
-#class PoolRequestStat:
-#    '''class stored info about pool requests'''
+class PoolRequestStat:
+    '''class stored info about pool requests'''
 
-#    def __init__(self, poolrequestresult):
-#        self.poolrequestresult = poolrequestresult
+    def __init__(self, poolrequestresult):
+        self.poolrequestresult = poolrequestresult
 
+    def pr_in_day(self):
+        count_dict = {}
+        for i in range(len(self.poolrequestresult)):
+            key = self.poolrequestresult[i]['head']['repo']['pushed_at'][:10]
+            if key not in count_dict:
+                count_dict[key] = 1
+            else:
+                count_dict[key] += 1
+        for k, v in count_dict.items():
+            print(k,v)
+
+parse_argument()
+prs = PoolRequestStat(make_request(args.username, args.repo))
+prs.pr_in_day()
 
 # parse_argument()
 # mr = make_request(args.username, args.repo)
